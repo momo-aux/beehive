@@ -23,12 +23,14 @@ package mumblebee
 
 import (
 	"crypto/tls"
+	"fmt"
 	"net"
 	"strconv"
 	"strings"
 
 	"github.com/muesli/beehive/bees"
 	"layeh.com/gumble/gumble"
+	"layeh.com/gumble/gumbleffmpeg"
 	"layeh.com/gumble/gumbleutil"
 )
 
@@ -86,6 +88,12 @@ func (mod *MumbleBee) Action(action bees.Action) []bees.Placeholder {
 		action.Options.Bind("channel", &channel)
 		mod.move(channel)
 
+	case "play":
+		filename := ""
+
+		action.Options.Bind("filename", &filename)
+		mod.play(filename)
+
 	default:
 		panic("Unknown action triggered in " + mod.Name() + ": " + action.Name)
 	}
@@ -104,6 +112,17 @@ func (mod *MumbleBee) move(channel string) {
 		} else {
 			mod.Logln("Moved to channel:", channel, " failed. (channel not found)")
 		}
+	}
+}
+
+func (mod *MumbleBee) play(filename string) {
+	filename = strings.TrimSpace(filename)
+	file := "../assets/bees/mumblebee/" + filename + ".mp3"
+	stream := gumbleffmpeg.New(mod.client, gumbleffmpeg.SourceFile(file))
+	if err := stream.Play(); err != nil {
+		fmt.Printf("%s\n", err)
+	} else {
+		fmt.Printf("Playing %s\n", file)
 	}
 }
 

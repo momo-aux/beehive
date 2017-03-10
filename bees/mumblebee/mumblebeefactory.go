@@ -157,6 +157,19 @@ func (factory *MumbleBeeFactory) Actions() []bees.ActionDescriptor {
 		},
 		{
 			Namespace:   factory.Name(),
+			Name:        "play",
+			Description: "Play a sound file",
+			Options: []bees.PlaceholderDescriptor{
+				{
+					Name:        "filename",
+					Description: "The name of the file to play",
+					Type:        "string",
+					Mandatory:   true,
+				},
+			},
+		},
+		{
+			Namespace:   factory.Name(),
 			Name:        "send_to_user",
 			Description: "Sends a message to a user",
 			Options: []bees.PlaceholderDescriptor{
